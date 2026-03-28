@@ -1,0 +1,58 @@
+package com.taskmanager.model;
+
+import com.taskmanager.utils.TaskStatus;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class Task {
+    private static int nextId = 1;
+    
+    private int id;
+    private String title;
+    private String description;
+    private TaskStatus status;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    public Task(String title, String description) {
+        this.id = nextId++;
+        this.title = title;
+        this.description = description;
+        this.status = TaskStatus.PENDING;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = this.createdAt;
+    }
+
+    // Getters and Setters
+    public int getId() { return id; }
+    
+    public String getTitle() { return title; }
+    public void setTitle(String title) { 
+        this.title = title;
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    public String getDescription() { return description; }
+    public void setDescription(String description) { 
+        this.description = description;
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    public TaskStatus getStatus() { return status; }
+    public void setStatus(TaskStatus status) { 
+        this.status = status;
+        this.updatedAt = LocalDateTime.now();
+    }
+    
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return String.format("[%d] %s - %s [%s]\n    Created: %s | Updated: %s",
+            id, title, description, status,
+            createdAt.format(formatter),
+            updatedAt.format(formatter));
+    }
+}
