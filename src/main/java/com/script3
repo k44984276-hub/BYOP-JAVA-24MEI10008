@@ -1,0 +1,61 @@
+package com.taskmanager.service;
+
+import com.taskmanager.model.Task;
+import com.taskmanager.utils.TaskStatus;
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class TaskService {
+    private Map<Integer, Task> tasks = new HashMap<>();
+
+    public Task createTask(String title, String description) {
+        Task task = new Task(title, description);
+        tasks.put(task.getId(), task);
+        return task;
+    }
+
+    public List<Task> getAllTasks() {
+        return new ArrayList<>(tasks.values());
+    }
+
+    public Optional<Task> getTaskById(int id) {
+        return Optional.ofNullable(tasks.get(id));
+    }
+
+    public boolean updateTaskStatus(int id, TaskStatus newStatus) {
+        return getTaskById(id).map(task -> {
+            task.setStatus(newStatus);
+            return true;
+        }).orElse(false);
+    }
+
+    public boolean deleteTask(int id) {
+        return tasks.remove(id) != null;
+    }
+
+    public List<Task> searchTasks(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return getAllTasks();
+        }
+        
+        String lowerKeyword = keyword.toLowerCase();
+        return tasks.values().stream()
+            .filter(task -> task.getTitle().toLowerCase().contains(lowerKeyword) ||
+                           task.getDescription().toLowerCase().contains(lowerKeyword))
+            .collect(Collectors.toList());
+    }
+
+    public List<Task> getTasksByStatus(TaskStatus status) {
+        return tasks.values().stream()
+            .filter(task -> task.getStatus() == status)
+            .collect(Collectors.toList());
+    }
+
+    public int getTaskCount() {
+        return tasks.size();
+    }
+
+    public void clearAllTasks() {
+        tasks.clear();
+    }
+}
